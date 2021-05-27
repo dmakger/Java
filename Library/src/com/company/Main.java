@@ -1,6 +1,6 @@
 package com.company;
 
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
@@ -138,7 +138,7 @@ public class Main {
             }
 
             // 3. Table issue
-            if (n.equals("3")) {
+            else if (n.equals("3")) {
                 System.out.println();
                 while (!isExit) {
                     helper.issue.menu();
@@ -155,37 +155,44 @@ public class Main {
                         }
                         System.out.println();
                     }
-//                    // 2. Update book
-//                    else if (n.equals("2")) {
-//                        Issue issue = helper.issue.input();
-//                        boolean isUpdate = db.updateIssue(issue);
-//                        if (isUpdate) {
-//                            System.out.println("\nВыдача успешно обновлена");
-//                        } else {
-//                            System.out.println("\nТакой выдачи не существует");
-//                        }
-//                        System.out.println();
-//                    }
-//
-//                    // 3. Delete book
-//                    else if (n.equals("3")) {
-//                        Issue issue = helper.issue.input();
-//                        boolean isDel = db.deleteIssue(issue);
-//                        if (isDel) {
-//                            System.out.println("\nВыдача успешно удалена");
-//                        } else {
-//                            System.out.println("\nТакой выдачи не существует");
-//                        }
-//                        System.out.println();
-//                    }
-//                    // 4. Print all table book
-//                    else if (n.equals("4")) {
-//                        boolean isTableEmpty = db.printAllIssue();
-//                        if (!isTableEmpty) {
-//                            System.out.println("\nТаблица пуста");
-//                        }
-//                        System.out.println();
-//                    }
+                    // 2. Update book
+                    else if (n.equals("2")) {
+                        System.out.println("Введите существующего пользователя");
+                        Issue issueOld = helper.issue.input();
+
+                        System.out.println("Введите новые данные для него");
+                        Issue issueNew = helper.issue.input();
+
+                        boolean isUpdate = db.updateIssue(issueOld, issueNew);
+                        if (isUpdate) {
+                            System.out.println("\nВыдача успешно обновлена");
+                        } else {
+                            System.out.println("\nТакой выдачи не существует");
+                        }
+                        System.out.println();
+                    }
+
+                    // 3. Delete book
+                    else if (n.equals("3")) {
+                        System.out.println("Введите пользователя для удаления");
+                        Issue issue = helper.issue.input();
+
+                        boolean isDel = db.deleteIssue(issue);
+                        if (isDel) {
+                            System.out.println("\nВыдача успешно удалена");
+                        } else {
+                            System.out.println("\nТакой выдачи не существует");
+                        }
+                        System.out.println();
+                    }
+                    // 4. Print all table book
+                    else if (n.equals("4")) {
+                        boolean isTableEmpty = db.printAllIssue();
+                        if (!isTableEmpty) {
+                            System.out.println("\nТаблица пуста");
+                        }
+                        System.out.println();
+                    }
 
                     // 0. Back
                     else if (n.equals("0")) {
@@ -195,6 +202,37 @@ public class Main {
                 }
 
                 isExit = false;  // Возвращаем переменную в прежний вид, чтобы не выйти из внешнего цикла
+            }
+
+            // 4. Most-read author
+            else if (n.equals("4")) {
+                ArrayList<String> authors = db.getMostReadAuthor();  // Популярные авторы
+                System.out.println("the most widely read author is: " + String.join(", ", authors));
+                System.out.println();
+            }
+            // 5. Issuing books by date
+            else if (n.equals("5")) {
+                System.out.print("Введите дату [dd.mm.yyyy]: ");
+                String date = in.nextLine();
+                System.out.println();
+
+                ArrayList<HashMap<String, String>> books = db.getBooksByDateFromIssue(date);
+                if (!books.isEmpty()) {
+                    System.out.println("+-------+--------+-------+------+");
+                    System.out.println("| title | author | genre | year |");
+                    System.out.println("+-------+--------+-------+------+");
+                    for (HashMap<String, String> book : books) {
+                        System.out.println("| " + book.get("title")
+                                + " | " + book.get("author")
+                                + " | " + book.get("genre")
+                                + " | " + book.get("year") + " |");
+                    }
+                    System.out.println("+-------+--------+-------+------+");
+                } else {
+                    System.out.println("Книг не завезли");
+                }
+                System.out.println();
+
             }
 
             // 0. Back
@@ -219,6 +257,8 @@ class MainHelper{
         System.out.println("[1] Table book");
         System.out.println("[2] Table reader");
         System.out.println("[3] Table issue");
+        System.out.println("[4] Most-read author");
+        System.out.println("[5] Issuing books by date");
     }
 
     class BookHelper {
